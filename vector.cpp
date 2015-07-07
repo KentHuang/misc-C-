@@ -1,6 +1,15 @@
+#include <iostream>
 #include <memory>
+#include "vector.h"
  
 using std::allocator;
+using std::uninitialized_copy;
+using std::uninitialized_fill;
+
+template <class T>
+const T& max(const T& a, const T& b) {
+  return (a < b) ? b : a;
+}
 
 template <class T>
 Vec<T>& Vec<T>::operator=(const Vec& rhs) {
@@ -62,7 +71,25 @@ void Vec<T>::unchecked_append(const T& val) {
 
 
 int main() {
- return 0;
+  Vec<int> v;
+  v.push_back(121);
+  v.push_back(456);
+  for (Vec<int>::const_iterator iter = v.begin();
+       iter != v.end(); ++iter) {
+    std::cout << *iter << std::endl;
+  }
+  
+  Vec<int> s(v);
+  s.push_back(500);
+  for (Vec<int>::const_iterator iter = s.begin();
+       iter != s.end(); ++iter) {
+    std::cout << *iter << std::endl;
+  }
+
+  std::cout << "size of s: " << s.size() << std::endl;
+  std::cout << "s[2]: " << s[2] << std::endl;
+
+  return 0;
 }
 
 

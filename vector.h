@@ -1,3 +1,7 @@
+#include <memory>
+ 
+using std::allocator;
+
 template <class T> 
 class Vec {
 public:
