@@ -20,15 +20,16 @@ public:
 
   ~Vec() { uncreate(); }
 
-  size_type size() const { return limit - data; }
+  size_type size() const { return avail - data; }
+  size_type capacity() const { return limit - data;  }
   T& operator[](size_type i) { return data[i]; }
   const T& operator[](size_type i) const { return data[i]; }
 
   iterator begin() { return data; }
   const_iterator begin() const { return data; }
 
-  iterator end() { return limit; }
-  const_iterator end() const { return limit; }
+  iterator end() { return avail; }
+  const_iterator end() const { return avail; }
 
   Vec& operator=(const Vec&);
  
@@ -37,6 +38,11 @@ public:
       grow();
     unchecked_append(val);
   }
+
+  iterator erase(iterator pos);
+  iterator erase(iterator first, iterator end);
+
+  void clear();
 
 private:
   iterator data;  // first element in the Vec
@@ -119,16 +125,54 @@ void Vec<T>::unchecked_append(const T& val) {
   alloc.construct(avail++, val);
 }
 
+template <class T>
+T* Vec<T>::erase(iterator pos) {
+  alloc.destroy(pos);
+  if (pos+1 == avail)
+    return --avail;
+  iterator new_avail = uninitialized_copy(pos+1, avail, pos);
+  alloc.destroy(new_avail);
+  avail = new_avail;
+  return pos;
+}
+
+template <class T>
+T* Vec<T>::erase(iterator first, iterator last) {
+  iterator temp = first;
+  while (temp != last) {
+    alloc.destroy(temp++);
+  }
+  iterator new_avail = uninitialized_copy(temp, avail, first);
+  while (avail != new_avail)
+    alloc.destroy(--avail);
+  avail = new_avail;
+  return first;
+}
+
+template <class T>
+void Vec<T>::clear() {
+  size_type n = limit - data;
+  uncreate();
+  data = avail = alloc.allocate(n);
+  limit = data + n;
+}
+
 
 int main() {
+  // tests
+  /* 
   Vec<int> v;
-  v.push_back(121);
-  v.push_back(456);
-  for (Vec<int>::const_iterator iter = v.begin();
-       iter != v.end(); ++iter) {
-    std::cout << *iter << std::endl;
+  v.push_back(1);
+  v.push_back(2);
+  v.push_back(3);
+  v.push_back(4);
+  std::cout << *v.erase(v.begin(), v.begin()+2) << std::endl;
+  for(Vec<int>::const_iterator i = v.begin(); i != v.end(); ++i) {
+    std::cout << "n: " << *i << std::endl;
   }
-  
+  v.clear();
+  std::cout << v.size() << std::endl;
+
   Vec<int> s(v);
   s.push_back(500);
   for (Vec<int>::const_iterator iter = s.begin();
@@ -137,8 +181,15 @@ int main() {
   }
 
   std::cout << "size of s: " << s.size() << std::endl;
-  std::cout << "s[2]: " << s[2] << std::endl;
-
+  std::cout << "s[2]: " << s[2] << std::endl; 
+  
+  std::cout << "size1 " << v.size() << std::endl; 
+  std::cout << "capa1 " << v.capacity() << std::endl; 
+  v.clear();
+  std::cout << "size2 " << v.size() << std::endl;
+  std::cout << "capa2 " << v.capacity() << std::endl; 
+  v.push_back(1234567);
+  std::cout << *v.begin() << std::endl;
+  */
   return 0;
 }
-
