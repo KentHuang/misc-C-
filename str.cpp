@@ -64,10 +64,6 @@ Str operator+(const Str& s, const Str& t) {
 }
 
 
-
-
-
-
 int main() {
   Str s("Kent ");
   std::cout << "Hello" + s + "Huang" << std::endl; 

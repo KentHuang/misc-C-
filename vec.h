@@ -157,39 +157,3 @@ void Vec<T>::clear() {
   limit = data + n;
 }
 
-
-int main() {
-  // tests
-  /* 
-  Vec<int> v;
-  v.push_back(1);
-  v.push_back(2);
-  v.push_back(3);
-  v.push_back(4);
-  std::cout << *v.erase(v.begin(), v.begin()+2) << std::endl;
-  for(Vec<int>::const_iterator i = v.begin(); i != v.end(); ++i) {
-    std::cout << "n: " << *i << std::endl;
-  }
-  v.clear();
-  std::cout << v.size() << std::endl;
-
-  Vec<int> s(v);
-  s.push_back(500);
-  for (Vec<int>::const_iterator iter = s.begin();
-       iter != s.end(); ++iter) {
-    std::cout << *iter << std::endl;
-  }
-
-  std::cout << "size of s: " << s.size() << std::endl;
-  std::cout << "s[2]: " << s[2] << std::endl; 
-  
-  std::cout << "size1 " << v.size() << std::endl; 
-  std::cout << "capa1 " << v.capacity() << std::endl; 
-  v.clear();
-  std::cout << "size2 " << v.size() << std::endl;
-  std::cout << "capa2 " << v.capacity() << std::endl; 
-  v.push_back(1234567);
-  std::cout << *v.begin() << std::endl;
-  */
-  return 0;
-}
