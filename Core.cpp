@@ -2,7 +2,8 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-
+#include <iomanip>
+ 
 using namespace std;
 
 class Core {
@@ -11,7 +12,7 @@ public:
   Core(std::istream& is) { read(is); }
 
   std::string name() const;
-  double grade() const;
+  virtual double grade() const;
   std::istream& read(std::istream&);
 protected:
   std::istream& read_common(std::istream&);
@@ -35,6 +36,14 @@ private:
 
 
 string Core::name() const { return n; }
+
+bool compare(const Core& c1, const Core& c2) {
+  return c1.name() < c2.name();
+}
+
+bool compare_grades(const Core& c1, const Core& c2) {
+  return c1.grade() < c2.grade();
+}
 
 double grade(double midterm, double final, double homework) {
   return 0.2 * midterm + 0.4 * final + 0.4 * homework;
@@ -78,14 +87,14 @@ istream& read_hw(istream& in, vector<double>& hw) {
 
 istream& Core::read(istream& in) {
   read_common(in);
-  read_hw(in, homework);
+  ::read_hw(in, homework);
   return in;
 }
 
 istream& Grad::read(istream& in) {
-  read_common(in);
+  Core::read_common(in);
   in >> thesis;
-  read_hw(in, homework);
+  ::read_hw(in, homework);
   return in;
 }
 
@@ -95,6 +104,30 @@ double Grad::grade() const {
 
 
 int main() {
+  vector<Core> students;
+  Core record;
+  string::size_type maxlen = 0;
+
+  while (record.read(cin)) {
+    maxlen = max(maxlen, record.name().size());
+    students.push_back(record);
+  }
+
+  sort(students.begin(), students.end(), compare);
+
+  for (vector<Core>::size_type i = 0; i != students.size(); ++i) {
+    cout << students[i].name() << string(maxlen + 1 - students[i].name().size(), ' '); 
+
+  try {
+    double final_grade = students[i].grade();
+    streamsize prec = cout.precision();
+    cout << setprecision(3) << final_grade 
+         << setprecision(prec) << endl;
+  } catch (domain_error e) {
+    cout << e.what() << endl;
+  } 
+
+  }
   return 0;
 }
 
